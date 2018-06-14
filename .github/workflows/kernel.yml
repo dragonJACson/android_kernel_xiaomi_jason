@@ -10,9 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: update and install
-      run: apt update && apt install -y bison flex bc curl wget build-essential zstd git zip python libssl-dev
+      run: sudo apt update && sudo apt install -y bison flex bc curl wget build-essential zstd git zip python libssl-dev
     - name: clone repos
-      run: mkdir /action && git clone https://github.com/kdrag0n/aarch64-elf-gcc /action/aarch64-elf-gcc && git clone https://github.com/kdrag0n/arm-eabi-gcc /action/arm-eabi-gcc
+      run: sudo mkdir /action && sudo git clone https://github.com/kdrag0n/aarch64-elf-gcc /action/aarch64-elf-gcc && sudo git clone https://github.com/kdrag0n/arm-eabi-gcc /action/arm-eabi-gcc
     - name: init for kernel building
       run: mkdir out && rm -rf out/arch/arm64/boot && make O=out ARCH=arm64 lineageos_jason_defconfig
     - name: build kernel
