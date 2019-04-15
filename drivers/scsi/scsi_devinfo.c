@@ -291,7 +291,7 @@ static void scsi_strcpy_devinfo(char *name, char *to, size_t to_length,
 
 	from_length = strlen(from);
 	/* this zero-pads the destination */
-	strncpy(to, from, to_length);
+	memcpy(to, from, to_length);
 	if (from_length < to_length && !compatible) {
 		/*
 		 * space pad the string if it is short.
@@ -683,7 +683,7 @@ static int proc_scsi_devinfo_open(struct inode *inode, struct file *file)
 	return seq_open(file, &scsi_devinfo_seq_ops);
 }
 
-/* 
+/*
  * proc_scsi_dev_info_write - allow additions to scsi_dev_info_list via /proc.
  *
  * Description: Adds a black/white list entry for vendor and model with an
