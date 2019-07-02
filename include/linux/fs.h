@@ -32,6 +32,7 @@
 #include <linux/blk_types.h>
 #include <linux/workqueue.h>
 #include <linux/percpu-rwsem.h>
+#include <linux/selinux.h>
 
 #include <asm/byteorder.h>
 #include <uapi/linux/fs.h>
@@ -291,7 +292,7 @@ struct iattr {
  */
 #define FILESYSTEM_MAX_STACK_DEPTH 2
 
-/** 
+/**
  * enum positive_aop_returns - aop return codes with specific semantics
  *
  * @AOP_WRITEPAGE_ACTIVATE: Informs the caller that page writeback has
@@ -301,7 +302,7 @@ struct iattr {
  * 			    be a candidate for writeback again in the near
  * 			    future.  Other callers must be careful to unlock
  * 			    the page if they get this return.  Returned by
- * 			    writepage(); 
+ * 			    writepage();
  *
  * @AOP_TRUNCATED_PAGE: The AOP method that was handed a locked page has
  *  			unlocked it and the page might have been truncated.
@@ -634,7 +635,9 @@ struct inode {
 	struct address_space	*i_mapping;
 
 #ifdef CONFIG_SECURITY
+#ifndef CONFIG_SECURITY_SELINUX
 	void			*i_security;
+#endif
 #endif
 
 	/* Stat data, not accessed from path walking */
@@ -717,6 +720,13 @@ struct inode {
 	struct fscrypt_info	*i_crypt_info;
 #endif
 	void			*i_private; /* fs or device private pointer */
+#ifdef CONFIG_SECURITY_SELINUX
+	/*
+	 * This needs to be at the end so its size won't cause the rest of the
+	 * struct to be broken across cachelines, thereby wrecking performance.
+	 */
+	struct inode_security_struct i_security[1];
+#endif
 };
 
 static inline unsigned int i_blocksize(const struct inode *node)
@@ -931,7 +941,9 @@ struct file {
 
 	u64			f_version;
 #ifdef CONFIG_SECURITY
+#ifndef CONFIG_SECURITY_SELINUX
 	void			*f_security;
+#endif
 #endif
 	/* needed for tty driver, and maybe others */
 	void			*private_data;
@@ -942,10 +954,13 @@ struct file {
 	struct list_head	f_tfile_llink;
 #endif /* #ifdef CONFIG_EPOLL */
 	struct address_space	*f_mapping;
-
-#ifdef CONFIG_FILE_TABLE_DEBUG
-	struct hlist_node f_hash;
-#endif /* #ifdef CONFIG_FILE_TABLE_DEBUG */
+#ifdef CONFIG_SECURITY_SELINUX
+	/*
+	 * This needs to be at the end so its size won't cause the rest of the
+	 * struct to be broken across cachelines, thereby wrecking performance.
+	 */
+	struct file_security_struct f_security[1];
+#endif
 } __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
 
 struct file_handle {
@@ -966,8 +981,8 @@ static inline struct file *get_file(struct file *f)
 
 #define	MAX_NON_LFS	((1UL<<31) - 1)
 
-/* Page cache limit. The filesystems should put that into their s_maxbytes 
-   limits, otherwise bad things can happen in VM. */ 
+/* Page cache limit. The filesystems should put that into their s_maxbytes
+   limits, otherwise bad things can happen in VM. */
 #if BITS_PER_LONG==32
 #define MAX_LFS_FILESIZE	((loff_t)ULONG_MAX << PAGE_SHIFT)
 #elif BITS_PER_LONG==64
@@ -2024,7 +2039,7 @@ int sync_inode_metadata(struct inode *inode, int wait);
 struct file_system_type {
 	const char *name;
 	int fs_flags;
-#define FS_REQUIRES_DEV		1 
+#define FS_REQUIRES_DEV		1
 #define FS_BINARY_MOUNTDATA	2
 #define FS_HAS_SUBTYPE		4
 #define FS_USERNS_MOUNT		8	/* Can be mounted by userns root */
@@ -2641,7 +2656,7 @@ extern int kernel_read(struct file *, loff_t, char *, unsigned long);
 extern ssize_t kernel_write(struct file *, const char *, size_t, loff_t);
 extern ssize_t __kernel_write(struct file *, const char *, size_t, loff_t *);
 extern struct file * open_exec(const char *);
- 
+
 /* fs/dcache.c -- generic fs support functions */
 extern int is_subdir(struct dentry *, struct dentry *);
 extern int path_is_under(struct path *, struct path *);
