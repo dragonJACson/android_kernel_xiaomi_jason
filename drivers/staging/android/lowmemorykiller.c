@@ -42,6 +42,7 @@
 #include <linux/rcupdate.h>
 #include <linux/profile.h>
 #include <linux/notifier.h>
+#include <linux/poll.h>
 #include <linux/mutex.h>
 #include <linux/delay.h>
 #include <linux/swap.h>
