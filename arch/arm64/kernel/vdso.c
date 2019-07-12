@@ -44,6 +44,10 @@ struct vdso_mappings {
 	struct vm_special_mapping code_mapping;
 };
 
+extern char vdso_start[], vdso_end[];
+static unsigned long vdso_pages;
+static struct page **vdso_pagelist;
+
 /*
  * The vDSO data page.
  */
@@ -188,6 +192,7 @@ static int __init vdso_mappings_init(const char *name,
 	 */
 	vdso_pagelist = kmalloc_array(vdso_pages + 1, sizeof(struct page *),
 				      GFP_KERNEL);
+
 	if (vdso_pagelist == NULL)
 		return -ENOMEM;
 
