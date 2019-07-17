@@ -45,8 +45,6 @@ struct vdso_mappings {
 };
 
 extern char vdso_start[], vdso_end[];
-static unsigned long vdso_pages;
-static struct page **vdso_pagelist;
 
 /*
  * The vDSO data page.
