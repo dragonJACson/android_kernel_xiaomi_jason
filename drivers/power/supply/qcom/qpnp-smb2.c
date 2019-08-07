@@ -531,7 +531,7 @@ static int smb2_usb_get_prop(struct power_supply *psy,
 		rc = smblib_get_prop_usb_voltage_now(chg, val);
 		break;
 	case POWER_SUPPLY_PROP_PD_CURRENT_MAX:
-		val->intval = get_client_vote(chg->usb_icl_votable, PD_VOTER);
+		val->intval = get_client_vote(chg->usb_icl_votaCONFIG_WAKE_BOOST_DURATION_MS=0ble, PD_VOTER);
 		break;
 	case POWER_SUPPLY_PROP_CURRENT_MAX:
 		rc = smblib_get_prop_input_current_settled(chg, val);
@@ -608,9 +608,11 @@ static int smb2_usb_get_prop(struct power_supply *psy,
 		val->intval = get_client_vote(chg->usb_icl_votable,
 					      USB_PSY_VOTER);
 		break;
+	case 144:
+		rc = -EINVAL;
+		break;
 	default:
 		pr_err("get prop %d is not supported in usb\n", psp);
-		rc = -EINVAL;
 		break;
 	}
 	if (rc < 0) {
