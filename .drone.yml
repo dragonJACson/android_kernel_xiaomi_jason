@@ -1,0 +1,22 @@
+kind: pipeline
+name: kernel_ci
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  depth: 1
+
+steps:
+  - name: default
+    image: ubuntu:latest
+    commands:
+      - apt update && apt install -y bison flex bc curl wget build-essential zstd git zip python libssl-dev
+      - git clone https://github.com/kdrag0n/aarch64-elf-gcc /drone/aarch64-elf-gcc
+      - git clone https://github.com/kdrag0n/arm-eabi-gcc /drone/arm-eabi-gcc
+      - mkdir out
+      - rm -rf out/arch/arm64/boot
+      - make O=out ARCH=arm64 lineageos_jason_defconfig
+      - make -j${KJOBS} O=out ARCH=arm64 CROSS_COMPILE="/drone/aarch64-elf-gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="/drone/arm-eabi-gcc/bin/arm-eabi-"
+
