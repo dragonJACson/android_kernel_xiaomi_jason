@@ -475,16 +475,9 @@
 			label = "cont_splash_mem";
 		};
 
-		dfps_data_mem: dfps_data_mem@0x9f8ff000 {
+		dfps_data_mem: dfps_data_mem@0x9f7ff000 {
 		       reg = <0 0x9f8ff000 0 0x00001000>;
 		       label = "dfps_data_mem";
-		};
-
-		ramoops_mem: ramoops_mem_region@0x9f900000 {
-			no-map;
-			compatible = "removed-dma-pool";
-			reg = <0 0x9f900000 0 0x200000>;
-			label = "ramoops_mem";
 		};
 	};
 
