@@ -912,7 +912,7 @@ static int dynamic_boost(int boost)
 {
 	int ret;
 	/* Backup boost_default */
-	int boost_default_backup;
+	int boost_default_backup = 0;
 
 	if (boost > st_ta->boost_default)
 	{ 
