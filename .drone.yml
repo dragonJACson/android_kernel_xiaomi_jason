@@ -13,10 +13,10 @@ steps:
     image: ubuntu:latest
     commands:
       - apt update && apt install -y bison flex bc curl wget build-essential zstd git zip python libssl-dev
-      - git clone https://github.com/kdrag0n/aarch64-elf-gcc /drone/aarch64-elf-gcc
-      - git clone https://github.com/kdrag0n/arm-eabi-gcc /drone/arm-eabi-gcc
+      - git clone https://github.com/dragonJACson/aarch64-linux-gcc /drone/aarch64-linux-gcc
+      - git clone https://github.com/dragonJACson/arm-linux-gnueabi-gcc /drone/arm-linux-gnueabi-gcc
       - mkdir out
       - rm -rf out/arch/arm64/boot
       - make O=out ARCH=arm64 lineageos_jason_defconfig
-      - make -j${KJOBS} O=out ARCH=arm64 CROSS_COMPILE="/drone/aarch64-elf-gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="/drone/arm-eabi-gcc/bin/arm-eabi-"
+      - make -j${KJOBS} O=out ARCH=arm64 CROSS_COMPILE="/drone/aarch64-linux-gcc/bin/aarch64-linux-" CROSS_COMPILE_ARM32="/drone/arm-linux-gnueabi-gcc/bin/arm-linux-gnueabi-"
 

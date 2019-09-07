@@ -12,8 +12,8 @@ jobs:
     - name: update and install
       run: sudo apt update && sudo apt install -y bison flex bc curl wget build-essential zstd git zip python libssl-dev
     - name: clone repos
-      run: sudo mkdir /action && sudo git clone https://github.com/kdrag0n/aarch64-elf-gcc /action/aarch64-elf-gcc && sudo git clone https://github.com/kdrag0n/arm-eabi-gcc /action/arm-eabi-gcc
+      run: sudo mkdir /action && sudo git clone https://github.com/dragonJACson/aarch64-linux-gcc /action/aarch64-linux-gcc && sudo git clone https://github.com/dragonJACson/arm-linux-gnueabi-gcc /action/arm-linux-gnueabi-gcc
     - name: init for kernel building
       run: mkdir out && rm -rf out/arch/arm64/boot && make O=out ARCH=arm64 lineageos_jason_defconfig
     - name: build kernel
-      run: make -j${KJOBS} O=out ARCH=arm64 CROSS_COMPILE="/action/aarch64-elf-gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="/action/arm-eabi-gcc/bin/arm-eabi-"
+      run: make -j${KJOBS} O=out ARCH=arm64 CROSS_COMPILE="/action/aarch64-linux-gcc/bin/aarch64-linux-" CROSS_COMPILE_ARM32="/action/arm-linux-gnueabi-gcc/bin/arm-linux-gnueabi-"
